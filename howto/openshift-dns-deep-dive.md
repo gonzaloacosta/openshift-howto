@@ -206,15 +206,57 @@ Ver la configuracion del operador
 oc describe network.config/cluster\
 ```
 
+## 1.5. Solución provisoria a queries de dns con response time 5seg
+
+Nota encontrada en la comunidad
+https://github.com/weaveworks/weave/issues/3287
+
+```
+I found this hack in some other related github issues and it's working for me
+apiVersion: v1
+data:
+  resolv.conf: |
+    nameserver 1.2.3.4
+    search default.svc.cluster.local svc.cluster.local cluster.local ec2.internal
+    options ndots:3 single-request-reopen
+kind: ConfigMap
+metadata:
+  name: resolvconf
+Then in your affected pods and containers
+        volumeMounts:
+        - name: resolv-conf
+          mountPath: /etc/resolv.conf
+          subPath: resolv.conf
+...
+volumes:
+      - name: resolv-conf
+        configMap:
+          name: resolvconf
+          items:
+          - key: resolv.conf
+            path: resolv.conf
+```
+
 ## Links de referencia
 - Corefile for adding additional nameserver to CoreDNS configuration file in OCP 4
-    https://access.redhat.com/solutions/4765861
+https://access.redhat.com/solutions/4765861
 
 - How to collect TCP dump from OCP 4 CoreOS nodes and pods running on it ?
-    https://access.redhat.com/solutions/4537671
+https://access.redhat.com/solutions/4537671
 
 - Actualizar nameserver en OCP4
-    https://access.redhat.com/solutions/4518671
+https://access.redhat.com/solutions/4518671
 
 - Troubleshooting Openshift 4.x DNS
-    https://access.redhat.com/solutions/3804501
+https://access.redhat.com/solutions/3804501
+
+- Kubernetes DNS Debug
+https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/#:~:text=Check%20for%20Errors%20in%20the,logs%20for%20the%20DNS%20containers.&text=See%20if%20there%20are%20any,a%20Warning%2C%20Error%20or%20Failure.
+
+- DNS problems scaling with Kubernetes
+https://blog.codacy.com/dns-hell-in-kubernetes/
+
+- Racy conntrack and DNS lookup timeouts
+https://www.weave.works/blog/racy-conntrack-and-dns-lookup-timeouts
+
+- 
