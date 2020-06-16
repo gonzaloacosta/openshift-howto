@@ -1,0 +1,105 @@
+== Instalacion de Openshift en AWS IPI (Full Automation)
+
+=== Instalacion de toods los clientes
+La instalacion de todos los clientes esta en el documento install-clients.md incluye:
+
+* oc
+* openshift-install
+* aws-cli
+
+=== Instalacion AWS IPI
+
+Requisitos:
+
+* Public Key: ./ssh/id_rsa.pub
+* Platform: aws
+* Region: us-east-1
+* Base Domain: sandboxXXX.opentlc.com (puede ser el dominio que uno quiera ej, labs.semperti.com)
+* Cluster Name: 'ocp'. El cluster name es un subdominio unico aws y dentro de labs.semperti.com 
+
+----
+export GUID=ocp
+[gonzalo.acosta-semperti.com@clientvm 0 ~]$ openshift-install create cluster --dir $HOME/cluster-${GUID}
+? Platform aws
+INFO Credentials loaded from the "default" profile in file "/home/gonzalo.acosta-semperti.com/.aws/credentials"
+? Region us-east-2
+? Base Domain 41bf.sandbox1873.opentlc.com
+? Cluster Name cluster-41bf
+? Pull Secret [? for help] **************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************
+INFO Creating infrastructure resources...
+INFO Waiting up to 20m0s for the Kubernetes API at https://api.cluster-41bf.41bf.sandbox1873.opentlc.com:6443...
+INFO API v1.17.1 up
+INFO Waiting up to 40m0s for bootstrapping to complete...
+INFO Destroying the bootstrap resources...
+INFO Waiting up to 30m0s for the cluster at https://api.cluster-41bf.41bf.sandbox1873.opentlc.com:6443 to initialize...
+INFO Waiting up to 10m0s for the openshift-console route to be created...
+INFO Install complete!
+INFO To access the cluster as the system:admin user when using 'oc', run 'export KUBECONFIG=/home/gonzalo.acosta-semperti.com/cluster-41bf/auth/kubeconfig'
+INFO Access the OpenShift web-console here: https://console-openshift-console.apps.cluster-41bf.41bf.sandbox1873.opentlc.com
+INFO Login to the console with user: kubeadmin, password: AeFJa-pXanh-8Fteh-Jp83s
+[gonzalo.acosta-semperti.com@clientvm 0 ~]$
+----
+
+=== Logs de instalacion
+----
+${HOME}/cluster-${GUID}/.openshift_install.log
+----
+
+=== Otras directivas de openshift-install 
+
+* Crear archivos de instalacion
+----
+openshift-install create install-config --dir $HOME/cluster-${GUID}
+----
+
+* Actualizar archivos de configuracion, por ejemplo con el tipo de instancias
+----
+install-config.yaml 
+----
+
+* Crear los YAML templates (los cambios en AWS no estan soportados)
+---- 
+openshift-install create manifests --dir $HOME/cluster-${GUID}
+----
+
+
+* Crear ignition files (cambio de los ignition files no esta soportado)
+----
+openshift-install create ignition-configs --dir $HOME/cluster-${GUID}
+----
+
+* Instalar el cluster
+----
+openshift-install create cluster --dir $HOME/cluster-${GUID}
+----
+
+* Borrar el cluster
+----
+openshift-install destroy cluster --dir $HOME/cluster-${GUID}
+----
+
+=== Clean up de cluster en caso de falla
+----
+openshift-install destroy cluster --dir $HOME/cluster-${GUID}
+rm -rf $HOME/.kube
+rm -rf $HOME/cluster-${GUID}
+----
+
+=== Verificacion de cluster
+----
+export KUBECONFIG=$HOME/cluster-${GUID}/auth/kubeconfig
+echo "export KUBECONFIG=$HOME/cluster-${GUID}/auth/kubeconfig" >>$HOME/.bashrc
+oc whoami
+oc get nodes
+oc get pod -A
+oc whoami --show-console
+----
+
+Verificacion en AWS
+----
+aws ec2 describe-instances --region=us-east-2 --output table
+openshift-install graph
+----
+
+
+
