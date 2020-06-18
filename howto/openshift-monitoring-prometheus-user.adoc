@@ -1,0 +1,39 @@
+==== Openshift Monitoring
+
+Agregar usuario de prometheus para poder configurar un datasource desde grafana.
+
+RH Note: https://access.redhat.com/solutions/4543031
+
+----
+$ oc project openshift-monitoring
+$ oc get secret prometheus-k8s-htpasswd -o jsonpath='{.data.auth}{"\n"}' | base64 -d > /tmp/htpasswd-tmp
+$ htpasswd -s -b  /tmp/htpasswd-tmp grafana-test topsecret
+$ oc patch secret prometheus-k8s-htpasswd -p "{\"data\":{\"auth\":\"$(base64 -w0 /tmp/htpasswd-tmp)\"}}"
+$ oc delete pod -l app=prometheus
+----
+
+Configuramos el datasource en caso de que Grafana haya sido desplegado desde un operador en Openshift.
+
+----
+apiVersion: integreatly.org/v1alpha1
+kind: GrafanaDataSource
+metadata:
+  name: example-grafanadatasource
+spec:
+  datasources:
+    - basicAuthUser: grafana-test
+      access: proxy
+      editable: true
+      secureJsonData:
+        basicAuthPassword: topsecret
+      name: Prometheus
+      url: 'https://prometheus-k8s.openshift-monitoring.svc.cluster.local:9091'
+      jsonData:
+        timeInterval: 5s
+        tlsSkipVerify: true
+      basicAuth: true
+      isDefault: true
+      version: 1
+      type: prometheus
+  name: example-datasources.yaml
+----
