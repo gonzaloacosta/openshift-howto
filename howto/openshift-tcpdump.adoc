@@ -1,0 +1,59 @@
+==== Openshift TCPDUMP
+
+Como colectar un tcpdump desde Openshift 4 en CoreOS con pods corriendo, particulamente queremos ver el trafico de un pod.
+
+1. Seleccionar el nodo en donde esta el pod a evaluar
+----
+oc get pods -o wide
+----
+
+2. Una vez que obtuvimos el pod que queremos analizar realizamos el debug
+----
+oc debug node/<node> --image=rhel7/rhel-tools
+----
+
+3. Buscamos el id del pod que desamos analizar.
+----
+sh-4.4# crictl ps | grep dns
+1b580718e9c65       5fa7f3523cbd23a52cc6886bb44f54ee8b36e056563b5500cc9795f3301a6a1c                                                                                      6 days ago          Running             dns-node-resolver            0                   4f8dd7630ff08
+81e746bf02767       5fa68c0a4e101884ea6c935742d91baa75dd57d7428a5ad365cf1865958e0b0e                                                                                      6 days ago          Running             dns                          0                   4f8dd7630ff08
+sh-4.4#
+----
+
+4. Obtener el pid del pod.
+sh-4.4# crictl inspect 81e746bf02767 | more
+{
+....
+  },
+  "pid": 5315,
+  "sandboxId": "4f8dd7630ff08d8ad16f8aa403c4b9947bebae907083add99167dc5c70f55412"
+}
+sh-4.4#
+
+5. Realizar el tcpdump tomando como parametro el 
+----
+sh-4.4# nsenter -t 5315 -n -- tcpdump -i any -nn port 5353 -w dns-pod.pcap &
+----
+
+6. Una vez pasado el tiempo de colecta habiendo capturado el error cortamos el tcpdump para poder analizarlo.
+----
+sh-4.4# POD_TCPDUMP_ID=$!
+sh-4.4# kill $POD_TCPDUMP_ID
+----
+
+==== Ejecutar un pod para poder realizar un troubleshooting de red
+
+---- 
+oc create sa rhel-tools
+oc adm policy add-scc-to-user anyuid system:serviceaccount:fabricio:rhel-tools
+oc run rhel-tools --image=rhel7/rhel-tools --serviceaccount=rhel-tools --generator=run-pod/v1 --command -- yes
+oc rsh rhel-tools
+sh-4.2# id
+uid=0(root) gid=0(root) groups=0(root)
+sh-4.2#
+----
+
+Si bien esto anda, el tcpdump va a ser necesario ejecutarlo como dice la nota de esta manera sobre el debug del nodo.
+
+oc debug node/$NODENAME --image=rhel7/rhel-tools
+
