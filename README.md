@@ -11,3 +11,4 @@ How to and Deep Dive over Openshift Container Platform
 5. [Openshift Install AWS IPI](howto/openshift-install-aws-ipi.adoc)
 6. [Openshift TCPDump](howto/openshift-tcpdump.adoc)
 7. [Openshift Monitoring agregar usuario a prometeus](howto/openshift-monitoring-prometheus-user.adoc)
+7. [Agregar nodo de infra con MachineConfigPools](howto/openshift-machineconfigpools.sh)
