@@ -1,7 +1,7 @@
 Openshift How To Repo
 =====================
 
-How to and Deep Dive over Openshift Container Platform 
+How to and Deep Dive on Openshift Container Platform 
 
 # Tabla de Contenido
 1. [Kubernetes Service Deep Dive](howto/kubernetes-service-deep-dive.md)
