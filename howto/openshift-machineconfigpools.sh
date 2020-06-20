@@ -54,3 +54,4 @@ oc get machineconfig
 
 #En caso que la configuración del machineconfig sea sensible podemos ofuscarla con 
 echo "texto en nodo de infra" | base64 -w0
+
