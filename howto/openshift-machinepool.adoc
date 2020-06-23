@@ -123,6 +123,7 @@ spec:
         filesystem: root
         mode: 0644
         path: /etc/testinfra
+EOF
 ----
 
 3. Actualizar la etiqueta de los nodos.
