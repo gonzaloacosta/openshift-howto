@@ -21,6 +21,8 @@ sh-4.4#
 ----
 
 4. Obtener el pid del pod.
+
+----
 sh-4.4# crictl inspect 81e746bf02767 | more
 {
 ....
@@ -29,13 +31,16 @@ sh-4.4# crictl inspect 81e746bf02767 | more
   "sandboxId": "4f8dd7630ff08d8ad16f8aa403c4b9947bebae907083add99167dc5c70f55412"
 }
 sh-4.4#
+----
 
 5. Realizar el tcpdump tomando como parametro el 
+
 ----
 sh-4.4# nsenter -t 5315 -n -- tcpdump -i any -nn port 5353 -w dns-pod.pcap &
 ----
 
 6. Una vez pasado el tiempo de colecta habiendo capturado el error cortamos el tcpdump para poder analizarlo.
+
 ----
 sh-4.4# POD_TCPDUMP_ID=$!
 sh-4.4# kill $POD_TCPDUMP_ID
@@ -55,5 +60,7 @@ sh-4.2#
 
 Si bien esto anda, el tcpdump va a ser necesario ejecutarlo como dice la nota de esta manera sobre el debug del nodo.
 
+----
 oc debug node/$NODENAME --image=rhel7/rhel-tools
+----
 
