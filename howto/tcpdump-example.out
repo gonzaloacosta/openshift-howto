@@ -1,0 +1,164 @@
+192.2.21.61 	gitlab.semperti.com
+192.168.0.65	clientvm.a43f.internal
+
+# tcpdump -i eth0 -nn host 192.168.0.65 port 443
+
+# Client >> TimeOut
+# ###########################################
+[gonzalo.acosta-semperti.com@clientvm 0 ~]$ nc -zv 192.2.21.61 443
+Ncat: Version 7.50 ( https://nmap.org/ncat )
+Ncat: Connection timed out.
+
+# Dump
+# ###########################################
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes
+11:39:16.165996 IP 192.168.0.65.60002 > 192.2.21.61.443: Flags [S], seq 2927679735, win 26883, options [mss 8961,sackOK,TS val 3717174 ecr 0,nop,wscale 7], length 0
+11:39:17.167120 IP 192.168.0.65.60002 > 192.2.21.61.443: Flags [S], seq 2927679735, win 26883, options [mss 8961,sackOK,TS val 3718176 ecr 0,nop,wscale 7], length 0
+11:39:19.171117 IP 192.168.0.65.60002 > 192.2.21.61.443: Flags [S], seq 2927679735, win 26883, options [mss 8961,sackOK,TS val 3720180 ecr 0,nop,wscale 7], length 0
+11:39:23.183114 IP 192.168.0.65.60002 > 192.2.21.61.443: Flags [S], seq 2927679735, win 26883, options [mss 8961,sackOK,TS val 3724192 ecr 0,nop,wscale 7], length 0
+
+# Client > Connected 
+# ###########################################
+[gonzalo.acosta-semperti.com@clientvm 1 ~]$ nc -zv gitlab.semperti.com 443
+Ncat: Version 7.50 ( https://nmap.org/ncat )
+Ncat: Connected to 190.2.21.61:443.
+Ncat: 0 bytes sent, 0 bytes received in 0.21 seconds.
+[gonzalo.acosta-semperti.com@clientvm 0 ~]$ nc -zv 192.2.21.61 443 
+
+# Dump
+# ###########################################
+11:41:47.051929 IP 192.168.0.65.50912 > 190.2.21.61.443: Flags [S], seq 2795378617, win 26883, options [mss 8961,sackOK,TS val 3868060 ecr 0,nop,wscale 7], length 0
+11:41:47.211537 IP 190.2.21.61.443 > 192.168.0.65.50912: Flags [S.], seq 1139514593, ack 2795378618, win 28960, options [mss 1460,sackOK,TS val 1350331090 ecr 3868060,nop,wscale 7], length 0
+11:41:47.211596 IP 192.168.0.65.50912 > 190.2.21.61.443: Flags [.], ack 1, win 211, options [nop,nop,TS val 3868220 ecr 1350331090], length 0
+11:41:47.211736 IP 192.168.0.65.50912 > 190.2.21.61.443: Flags [F.], seq 1, ack 1, win 211, options [nop,nop,TS val 3868220 ecr 1350331090], length 0
+11:41:47.371540 IP 190.2.21.61.443 > 192.168.0.65.50912: Flags [F.], seq 1, ack 2, win 227, options [nop,nop,TS val 1350331250 ecr 3868220], length 0
+11:41:47.371592 IP 192.168.0.65.50912 > 190.2.21.61.443: Flags [.], ack 2, win 211, options [nop,nop,TS val 3868380 ecr 1350331250], length 0
+
+# Client > Connected with cURL
+# ###########################################
+[gonzalo.acosta-semperti.com@clientvm 0 ~]$ curl -kv https://gitlab.semperti.com/
+* About to connect() to gitlab.semperti.com port 443 (#0)
+*   Trying 190.2.21.61...
+* Connected to gitlab.semperti.com (190.2.21.61) port 443 (#0)
+* Initializing NSS with certpath: sql:/etc/pki/nssdb
+* skipping SSL peer certificate verification
+* SSL connection using TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+* Server certificate:
+*       subject: CN=redmine.semperti.com
+*       start date: May 15 19:03:11 2020 GMT
+*       expire date: Aug 13 19:03:11 2020 GMT
+*       common name: redmine.semperti.com
+*       issuer: CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US
+> GET / HTTP/1.1
+> User-Agent: curl/7.29.0
+> Host: gitlab.semperti.com
+> Accept: */*
+>
+< HTTP/1.1 302 Found
+< Date: Fri, 26 Jun 2020 11:58:34 GMT
+< Server: nginx
+< Content-Type: text/html; charset=utf-8
+< Content-Length: 106
+< Cache-Control: no-cache
+< Location: http://gitlab.semperti.com/users/sign_in
+< X-Content-Type-Options: nosniff
+< X-Frame-Options: DENY
+< X-Request-Id: MR2OofY6D17
+< X-Runtime: 0.021026
+< X-Ua-Compatible: IE=edge
+< X-Xss-Protection: 1; mode=block
+< Strict-Transport-Security: max-age=31536000
+< Referrer-Policy: strict-origin-when-cross-origin
+<
+* Connection #0 to host gitlab.semperti.com left intact
+<html><body>You are being <a href="http://gitlab.semperti.com/users/sign_in">redirected</a>.</body></html>[gonzalo.acosta-semperti.com@clientvm 0 ~]$
+
+
+# Dump
+# ###########################################
+11:58:33.808828 IP 192.168.0.65.50918 > 190.2.21.61.443: Flags [S], seq 2575699056, win 26883, options [mss 8961,sackOK,TS val 4874817 ecr 0,nop,wscale 7], length 0
+11:58:33.974290 IP 190.2.21.61.443 > 192.168.0.65.50918: Flags [S.], seq 1607532064, ack 2575699057, win 28960, options [mss 1460,sackOK,TS val 1351337847 ecr 4874817,nop,wscale 7], length 0
+11:58:33.974355 IP 192.168.0.65.50918 > 190.2.21.61.443: Flags [.], ack 1, win 211, options [nop,nop,TS val 4874983 ecr 1351337847], length 0
+11:58:34.104454 IP 192.168.0.65.50918 > 190.2.21.61.443: Flags [P.], seq 1:200, ack 1, win 211, options [nop,nop,TS val 4875113 ecr 1351337847], length 199
+11:58:34.269792 IP 190.2.21.61.443 > 192.168.0.65.50918: Flags [.], ack 200, win 235, options [nop,nop,TS val 1351338143 ecr 4875113], length 0
+11:58:34.282004 IP 190.2.21.61.443 > 192.168.0.65.50918: Flags [.], seq 1:1449, ack 200, win 235, options [nop,nop,TS val 1351338155 ecr 4875113], length 1448
+11:58:34.282041 IP 192.168.0.65.50918 > 190.2.21.61.443: Flags [.], ack 1449, win 233, options [nop,nop,TS val 4875290 ecr 1351338155], length 0
+11:58:34.282094 IP 190.2.21.61.443 > 192.168.0.65.50918: Flags [.], seq 1449:2897, ack 200, win 235, options [nop,nop,TS val 1351338155 ecr 4875113], length 1448
+11:58:34.282101 IP 192.168.0.65.50918 > 190.2.21.61.443: Flags [.], ack 2897, win 256, options [nop,nop,TS val 4875291 ecr 1351338155], length 0
+11:58:34.282158 IP 190.2.21.61.443 > 192.168.0.65.50918: Flags [P.], seq 2897:3744, ack 200, win 235, options [nop,nop,TS val 1351338155 ecr 4875113], length 847
+11:58:34.282167 IP 192.168.0.65.50918 > 190.2.21.61.443: Flags [.], ack 3744, win 278, options [nop,nop,TS val 4875291 ecr 1351338155], length 0
+11:58:34.285289 IP 192.168.0.65.50918 > 190.2.21.61.443: Flags [P.], seq 200:326, ack 3744, win 278, options [nop,nop,TS val 4875294 ecr 1351338155], length 126
+11:58:34.451056 IP 190.2.21.61.443 > 192.168.0.65.50918: Flags [P.], seq 3744:3795, ack 326, win 235, options [nop,nop,TS val 1351338324 ecr 4875294], length 51
+11:58:34.451410 IP 192.168.0.65.50918 > 190.2.21.61.443: Flags [P.], seq 326:438, ack 3795, win 278, options [nop,nop,TS val 4875460 ecr 1351338324], length 112
+11:58:34.641994 IP 190.2.21.61.443 > 192.168.0.65.50918: Flags [P.], seq 3795:4429, ack 438, win 235, options [nop,nop,TS val 1351338515 ecr 4875460], length 634
+11:58:34.642330 IP 192.168.0.65.50918 > 190.2.21.61.443: Flags [P.], seq 438:469, ack 4429, win 301, options [nop,nop,TS val 4875651 ecr 1351338515], length 31
+11:58:34.642361 IP 192.168.0.65.50918 > 190.2.21.61.443: Flags [F.], seq 469, ack 4429, win 301, options [nop,nop,TS val 4875651 ecr 1351338515], length 0
+11:58:34.807973 IP 190.2.21.61.443 > 192.168.0.65.50918: Flags [F.], seq 4429, ack 470, win 235, options [nop,nop,TS val 1351338681 ecr 4875651], length 0
+11:58:34.808024 IP 192.168.0.65.50918 > 190.2.21.61.443: Flags [.], ack 4430, win 301, options [nop,nop,TS val 4875816 ecr 1351338681], length 0
+
+# Client ICMP 
+# ###########################################
+ping -c 2 www.google.com.ar
+
+# Dump
+# ###########################################
+12:27:42.519134 IP 192.168.0.65 > 172.217.4.195: ICMP echo request, id 3666, seq 1, length 64
+12:27:42.535986 IP 172.217.4.195 > 192.168.0.65: ICMP echo reply, id 3666, seq 1, length 64
+
+# TCPDUMP POD to POD
+# ###########################################
+
+# POD origen 10.131.0.24 > POD destino 10.130.8.8.8080
+#
+#
+# Desde el POD cliente
+# ###########################################
+~ $ nc 10.130.8.8 8080
+lala
+HTTP/1.1 400 Bad Request
+Content-Type: text/plain; charset=utf-8
+Connection: close
+
+400 Bad Request
+
+~ $
+
+# DUMP
+# ###########################################
+# SYN del cliente
+17:10:25.594518 IP 10.131.0.24.37595 > 10.130.8.8.8080: Flags [S], seq 1276783820, win 26733, options [mss 8911,sackOK,TS val 4150626436 ecr 0,nop,wscale 7], length 0
+17:10:25.594553 IP 10.131.0.24.37595 > 10.130.8.8.8080: Flags [S], seq 1276783820, win 26733, options [mss 8911,sackOK,TS val 4150626436 ecr 0,nop,wscale 7], length 0
+# SYN-ACK del server
+17:10:25.596005 IP 10.130.8.8.8080 > 10.131.0.24.37595: Flags [S.], seq 1086667160, ack 1276783821, win 26697, options [mss 8911,sackOK,TS val 2445679467 ecr 4150626436,nop,wscale 7], length 0
+17:10:25.596284 IP 10.130.8.8.8080 > 10.131.0.24.37595: Flags [S.], seq 1086667160, ack 1276783821, win 26697, options [mss 8911,sackOK,TS val 2445679467 ecr 4150626436,nop,wscale 7], length 0
+# ACK del cliente
+17:10:25.596310 IP 10.131.0.24.37595 > 10.130.8.8.8080: Flags [.], ack 1, win 209, options [nop,nop,TS val 4150626438 ecr 2445679467], length 0
+17:10:25.596327 IP 10.131.0.24.37595 > 10.130.8.8.8080: Flags [.], ack 1, win 209, options [nop,nop,TS val 4150626438 ecr 2445679467], length 0
+# PUSH de datos del cliente (escribi lala trafico HTTP) seq 1:6 ocn un lengh 6-1=5
+17:10:29.143037 IP 10.131.0.24.37595 > 10.130.8.8.8080: Flags [P.], seq 1:6, ack 1, win 209, options [nop,nop,TS val 4150629984 ecr 2445679467], length 5: HTTP
+17:10:29.143064 IP 10.131.0.24.37595 > 10.130.8.8.8080: Flags [P.], seq 1:6, ack 1, win 209, options [nop,nop,TS val 4150629984 ecr 2445679467], length 5: HTTP
+# ACK del server a la secuencia 6 seq 6
+17:10:29.144104 IP 10.130.8.8.8080 > 10.131.0.24.37595: Flags [.], ack 6, win 209, options [nop,nop,TS val 2445683015 ecr 4150629984], length 0
+17:10:29.144129 IP 10.130.8.8.8080 > 10.131.0.24.37595: Flags [.], ack 6, win 209, options [nop,nop,TS val 2445683015 ecr 4150629984], length 0
+# PUSH-ACK del server a la secuencia 6 seq 6 envio del HTTP 400 Bad Request
+17:10:29.144143 IP 10.130.8.8.8080 > 10.131.0.24.37595: Flags [P.], seq 1:104, ack 6, win 209, options [nop,nop,TS val 2445683015 ecr 4150629984], length 103: HTTP: HTTP/1.1 400 Bad Request
+17:10:29.144153 IP 10.130.8.8.8080 > 10.131.0.24.37595: Flags [P.], seq 1:104, ack 6, win 209, options [nop,nop,TS val 2445683015 ecr 4150629984], length 103: HTTP: HTTP/1.1 400 Bad Request
+# ACK del cliente a la secuencia seq 1:104
+17:10:29.144162 IP 10.131.0.24.37595 > 10.130.8.8.8080: Flags [.], ack 104, win 209, options [nop,nop,TS val 4150629986 ecr 2445683015], length 0
+17:10:29.144183 IP 10.131.0.24.37595 > 10.130.8.8.8080: Flags [.], ack 104, win 209, options [nop,nop,TS val 4150629986 ecr 2445683015], length 0
+# FIN-ACK del servidor (inicia el servidor el FIN) 
+17:10:29.144253 IP 10.130.8.8.8080 > 10.131.0.24.37595: Flags [F.], seq 104, ack 6, win 209, options [nop,nop,TS val 2445683015 ecr 4150629984], length 0
+17:10:29.144269 IP 10.130.8.8.8080 > 10.131.0.24.37595: Flags [F.], seq 104, ack 6, win 209, options [nop,nop,TS val 2445683015 ecr 4150629984], length 0
+# ACK del cliente chequear que el ACK es la seq + 1 = ack 105
+17:10:29.184987 IP 10.131.0.24.37595 > 10.130.8.8.8080: Flags [.], ack 105, win 209, options [nop,nop,TS val 4150630026 ecr 2445683015], length 0
+17:10:29.185012 IP 10.131.0.24.37595 > 10.130.8.8.8080: Flags [.], ack 105, win 209, options [nop,nop,TS val 4150630026 ecr 2445683015], length 0
+# PUSH-ACK del cliente en la seq 6:7 poterior al ack 6, (presione la tecla enter y disparo un caracter length 1 sobre HTTP)
+17:10:30.751146 IP 10.131.0.24.37595 > 10.130.8.8.8080: Flags [P.], seq 6:7, ack 105, win 209, options [nop,nop,TS val 4150631593 ecr 2445683015], length 1: HTTP
+17:10:30.751178 IP 10.131.0.24.37595 > 10.130.8.8.8080: Flags [P.], seq 6:7, ack 105, win 209, options [nop,nop,TS val 4150631593 ecr 2445683015], length 1: HTTP
+# RESET por parte del servidor para cerrar la conexion fallida
+17:10:30.752236 IP 10.130.8.8.8080 > 10.131.0.24.37595: Flags [R], seq 1086667265, win 0, length 0
+17:10:30.752261 IP 10.130.8.8.8080 > 10.131.0.24.37595: Flags [R], seq 1086667265, win 0, length 0
+
+
+

@@ -13,3 +13,4 @@ How to and Deep Dive on Openshift Container Platform
 7. [Openshift Monitoring agregar usuario a prometeus](howto/openshift-monitoring-prometheus-user.adoc)
 8. [Agregar nodo de infra con MachineConfigPools](howto/openshift-machineconfigpools.sh)
 9. [Openshift v4.x Upgrade Cluster](howto/openshift-upgrade.md)
+10. [Openshift One Liner](howto/openshift-oneliner.sh)
