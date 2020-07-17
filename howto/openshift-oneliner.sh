@@ -83,3 +83,6 @@ for i in $(oc adm prune images --keep-tag-revisions=10 | grep image | awk '{prin
 # Listar todos los pods que estan corriendo ordenados por nodo
 oc get pods --all-namespaces --field-selector status.phase=Running --sort-by spec.nodeName -o wide
 
+# Networking statistics
+for i in $(oc get pods -n openshift-sdn | awk '/sdn-/ { print $1 }' | grep -v sdn-controller) ; do echo ">>>>> $(oc exec $i -- hostanme)" ; oc exec $i -- ethtool -g ens192 ; oc exec $i -- ethtool -S ens192 ; oc exec $i -- ss -noemitaup ; done | tee -a cluster-networking-stat-$(date "+%Y%m%d%H%M").out
+
