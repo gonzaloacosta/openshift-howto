@@ -1,7 +1,7 @@
 # Instalacion de clientes para un ambiente Openshift
 
 # Como root
-```
+
 sudo -i
 ```
 
