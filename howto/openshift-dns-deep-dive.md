@@ -258,7 +258,7 @@ volumes:
 ### Solución provisoria en deployment
 
 ```bash
-oc patch deployment bike-v1 -p '{"spec":{"template":{"spec":{"dnsConfig":{"options":[{"name": "single-request"}]}}}}}'
+oc patch deployment NAMEDEPLOYMENT -p '{"spec":{"template":{"spec":{"dnsConfig":{"options":[{"name": "single-request"}]}}}}}'
 ```
 
 ## Links de referencia

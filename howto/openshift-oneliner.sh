@@ -86,3 +86,11 @@ oc get pods --all-namespaces --field-selector status.phase=Running --sort-by spe
 # Networking statistics
 for i in $(oc get pods -n openshift-sdn | awk '/sdn-/ { print $1 }' | grep -v sdn-controller) ; do echo ">>>>> $(oc exec $i -- hostanme)" ; oc exec $i -- ethtool -g ens192 ; oc exec $i -- ethtool -S ens192 ; oc exec $i -- ss -noemitaup ; done | tee -a cluster-networking-stat-$(date "+%Y%m%d%H%M").out
 
+# Catch up the pid of the containers into RHCOS
+chroot /host crictl inspect $(chroot /host crictl ps -a | awk '/swim/ {print $1}') | awk -F: '/pid/ {print $2}' | sed 's/[ ,\,]//g'
+nsenter -t $PID tcpdump -nni any port 5000
+
+
+# Cantidad de conexiones
+netstat -plan|grep :<puerto> | awk {'print $5'} | cut -d: -f 1 | sort | uniq -c | sort -n
+

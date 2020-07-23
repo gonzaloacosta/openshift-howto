@@ -36,13 +36,4 @@ https://dzone.com/articles/performance-testing-in-kubernetes
 https://www.weave.works/blog/racy-conntrack-and-dns-lookup-timeouts
 
 
-### Networking Ring Buffer
 
-1. Nota en Red Hat por los valores "pkts rx OOB: 6223"
-https://access.redhat.com/solutions/1751293
-
-2. Nota donde como fijar persistir la configuracion
-https://access.redhat.com/solutions/2127401
-
-3. Nota que explica como setearlo y esta clarisimo.
-https://vswitchzero.com/2017/09/26/vmxnet3-rx-ring-buffer-exhaustion-and-packet-loss/
