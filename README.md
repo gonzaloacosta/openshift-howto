@@ -14,3 +14,4 @@ How to and Deep Dive on Openshift Container Platform
 8. [Agregar nodo de infra con MachineConfigPools](howto/openshift-machineconfigpools.sh)
 9. [Openshift v4.x Upgrade Cluster](howto/openshift-upgrade.md)
 10. [Openshift One Liner](howto/openshift-oneliner.sh)
+11. [Clusteroperator is degraded with NodeInstallerDegraded in status](https://access.redhat.com/solutions/4849711)
