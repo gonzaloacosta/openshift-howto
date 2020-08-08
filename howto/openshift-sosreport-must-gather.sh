@@ -12,7 +12,7 @@ tar cvzf $(hostname)-must-gather.tar.gz must-gater*
 # Una vez colectado subirlo a Red Hat, los must-gather suelen ser archivos pesados 
 # por lo que conviene subirlos con la tool redhat-support-tool
 # RH Case ID: 02722809
-redhat-support-tool addattachment -c 02722809 $(hostname)-must-gather.tar.gz
+redhat-support-tool addattachment -c 02722809 -f $(hostname)-must-gather.tar.gz
 
 # SOSREPORT
 
