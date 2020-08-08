@@ -1,9 +1,10 @@
 Openshift How To Repo
 =====================
 
-How to and Deep Dive on Openshift Container Platform 
+How to and Deep Dive on Openshift Container Platform
 
 # Tabla de Contenido
+
 1. [Kubernetes Service Deep Dive](howto/kubernetes-service-deep-dive.md)
 2. [Install clientes en nodo bastion](howto/install-clientes.md)
 3. [Openshift DNS Deep Dive](howto/openshift-dns-deep-dive.md)
@@ -15,3 +16,6 @@ How to and Deep Dive on Openshift Container Platform
 9. [Openshift v4.x Upgrade Cluster](howto/openshift-upgrade.md)
 10. [Openshift One Liner](howto/openshift-oneliner.sh)
 11. [Clusteroperator is degraded with NodeInstallerDegraded in status](https://access.redhat.com/solutions/4849711)
+12. [Openshift Helper Services](https://github.com/RedHatOfficial/ocp4-helpernode)
+13. [ClusterLogging - ElasticSearch](howto/openshift-clusterlogging.md)
+14. [Openshift Must Gather y SOSREPORT](howto/openshift-sosreport-must-gather.md)
