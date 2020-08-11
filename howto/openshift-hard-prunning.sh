@@ -1,3 +1,8 @@
+#Primero tratar de borrar con oc adm prune
+oc login -u admin
+oc adm prune images --keep-tag-revisions=3 --registry-url=https://default-route-openshift-image-registry.apps.ocp.term.gire.ent
+oc adm prune images --keep-tag-revisions=3 --registry-url=https://default-route-openshift-image-registry.apps.ocp.term.gire.ent --confirm
+
 # RH KB
 # https://docs.openshift.com/container-platform/3.11/admin_guide/pruning_resources.html#hard-pruning-registry
 
@@ -15,3 +20,4 @@ oc -n openshift-image-registry exec -i -t "$(oc -n openshift-image-registry get 
 
 #Con este comando volves la registry a ReadWrite
 oc set env -n openshift-image-registry deployment/image-registry REGISTRY_STORAGE_MAINTENANCE_READONLY-
+

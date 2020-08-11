@@ -19,3 +19,4 @@ How to and Deep Dive on Openshift Container Platform
 12. [Openshift Helper Services](https://github.com/RedHatOfficial/ocp4-helpernode)
 13. [ClusterLogging - ElasticSearch](howto/openshift-clusterlogging.md)
 14. [Openshift Must Gather y SOSREPORT](howto/openshift-sosreport-must-gather.md)
+15. [Red Hat Technicals Tips, guides and Troubleshooting](https://access.redhat.com/articles/4217411)
