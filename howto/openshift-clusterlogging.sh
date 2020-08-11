@@ -31,6 +31,7 @@ oc get pod fluentd-z8fx7 -o yaml |grep BUFFER -A 2
     - name: FILE_BUFFER_LIMIT
       value: 256Mi
     - name: FLUENTD_CPU_LIMIT
+
 oc exec fluentd-z8fx7 -- du -sh /var/lib/fluentd/clo_default_output_es/
 7.7G	/var/lib/fluentd/clo_default_output_es/
  oc logs fluentd-ff8nn
