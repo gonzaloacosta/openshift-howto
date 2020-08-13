@@ -94,3 +94,5 @@ nsenter -t $PID tcpdump -nni any port 5000
 # Cantidad de conexiones
 netstat -plan|grep :<puerto> | awk {'print $5'} | cut -d: -f 1 | sort | uniq -c | sort -n
 
+# Cambiar la politica de retencion de los persistent volume
+for i in $(oc get pv | awk '/pvc-/ {print $1}') ; do oc patch pv $i  -p '{"spec":{"persistentVolumeReclaimPolicy":"Retain"}}' ; done
