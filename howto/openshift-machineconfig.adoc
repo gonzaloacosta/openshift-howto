@@ -79,3 +79,5 @@ cluster-41bf-fbs46-worker-us-east-2c-plb4w   Running    m4.large    us-east-2   
 ---- 
 
 
+==== Como Configurar machineset en vsphere 6.7 y ocp 4.5+
+https://access.redhat.com/solutions/5307621

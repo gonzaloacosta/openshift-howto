@@ -20,3 +20,5 @@ How to and Deep Dive on Openshift Container Platform
 13. [ClusterLogging - ElasticSearch](howto/openshift-clusterlogging.sh)
 14. [Openshift Must Gather y SOSREPORT](howto/openshift-sosreport-must-gather.md)
 15. [Red Hat Technicals Tips, guides and Troubleshooting](https://access.redhat.com/articles/4217411)
+16. [Opeshift vSphere Dynamic Provision](howto/openshift-vmware-dynamic-provision.sh)
+17. [Opeshift Audit Logs](howto/openshift-audit-logs.sh)

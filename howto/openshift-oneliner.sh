@@ -96,3 +96,9 @@ netstat -plan|grep :<puerto> | awk {'print $5'} | cut -d: -f 1 | sort | uniq -c 
 
 # Cambiar la politica de retencion de los persistent volume
 for i in $(oc get pv | awk '/pvc-/ {print $1}') ; do oc patch pv $i  -p '{"spec":{"persistentVolumeReclaimPolicy":"Retain"}}' ; done
+
+# Ver tags asociados a un imagestreams
+oc get is python -n openshift --template='{{.metadata.name}}{{range .spec.tags}}{{" "}}{{.name}}{{end}}{{"\n"}}'
+
+# Patch
+oc patch clusterlogging -n openshift-logging instance -p  '{"spec":{"logStore":{"elasticsearch":{"resources":{"limits":{"cpu":"1500m"}}}}}}'
