@@ -141,11 +141,8 @@ $ escli shards
 
 Para poder evaluar las razones de porque los indices se encuentran en UNASSIGNED ver las siguientes notas.
 
-- Troubleshooting ES on Openshift:
-        https://access.redhat.com/articles/3136551
-
-- Need to manually rebalance or reallocate primary shards on Elasticsearch nodes
-        https://access.redhat.com/solutions/4079301
+- [Troubleshooting ES on Openshift](https://access.redhat.com/articles/3136551)
+- [Need to manually rebalance or reallocate primary shards on Elasticsearch nodes](https://access.redhat.com/solutions/4079301)
 
 ### ElasticSearch Info
 
