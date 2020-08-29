@@ -68,6 +68,42 @@ Gonzalo Acosta <gonzaloacostapeiro@gmail.com>
 ---------------------------------------------------------------------------------------
 ```
 
+### ElasticSearch API + PATH
+
+Donde el path que continúa al subcomando api es un path de una consulta la api de elasticsearch.
+
+```bash
+$ escli api _cat/
+=^.^=
+/_cat/allocation
+/_cat/shards
+/_cat/shards/{index}
+/_cat/master
+/_cat/nodes
+/_cat/tasks
+/_cat/indices
+/_cat/indices/{index}
+/_cat/segments
+/_cat/segments/{index}
+/_cat/count
+/_cat/count/{index}
+/_cat/recovery
+/_cat/recovery/{index}
+/_cat/health
+/_cat/pending_tasks
+/_cat/aliases
+/_cat/aliases/{alias}
+/_cat/thread_pool
+/_cat/thread_pool/{thread_pools}
+/_cat/plugins
+/_cat/fielddata
+/_cat/fielddata/{fields}
+/_cat/nodeattrs
+/_cat/repositories
+/_cat/snapshots/{repository}
+/_cat/templates
+```
+
 ### ElasticSearch Health
 
 ```bash
