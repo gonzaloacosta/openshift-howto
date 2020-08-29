@@ -1,14 +1,32 @@
 # Openshfit ElasticSerach CLI
 
 ## Contexto
+
 Un simple script para poder consultar elasticsearch desplegado dentro de openshift.
 
 ## Instalación
+
+El script requiere el cliente por linea de comandos de Openshift. Definir la variable de entorno con la version del su clientes de Openshift `OCP_VERSION`
+
+```bash
+OCP_VERSION=4.4.9
+echo "Openshfit Client Install..."
+wget https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OCP_VERSION}/openshift-client-linux-${OCP_VERSION}.tar.gz
+tar zxvf openshift-client-linux-${OCP_VERSION}.tar.gz -C /usr/bin
+rm -f openshift-client-linux-${OCP_VERSION}.tar.gz /usr/bin/README.md
+chmod +x /usr/bin/oc
+ls -l /usr/bin/oc
+```
 
 ```bash
 curl -O https://raw.githubusercontent.com/gonzaloacosta/openshift-howto/master/howto/files/escli.sh
 sudo mv escli.sh /usr/loca/bin/escli
 sudo chmod +x /usr/local/bin/escli
+```
+Para poder hacer uso de script deben loguearse con el cliente oc.
+
+```
+oc login -u <user_name> https://api.<cluster_id>.<domain>:6443
 ```
 
 ## Sintaxis
