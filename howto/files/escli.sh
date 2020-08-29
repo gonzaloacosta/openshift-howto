@@ -35,8 +35,7 @@ get_help() {
     echo "         shardsunassigned"
     echo "         start"
     echo "         stop"
-    echo "         tasks"
-    echo "         threadpools"
+    echo "         pendingtasks"
     echo "         api <string>"
     echo "         replicas <num_replica> <indice>"
     echo ""
@@ -188,13 +187,13 @@ elif [[ $ARG1 == "health" ]] ; then
     echo "------------------------------------------------------------------------------"
     oc exec -n $es_ns $es_pod -c elasticsearch -- curl -s --key /etc/elasticsearch/secret/admin-key --cert /etc/elasticsearch/secret/admin-cert --cacert /etc/elasticsearch/secret/admin-ca https://localhost:9200/_cat/master?v    
 
-elif [[ $ARG1 == "tasks" ]] ; then
+elif [[ $ARG1 == "pendingtasks" ]] ; then
 
     oc exec -n $es_ns $es_pod -c elasticsearch -- curl -s --key /etc/elasticsearch/secret/admin-key --cert /etc/elasticsearch/secret/admin-cert --cacert /etc/elasticsearch/secret/admin-ca https://localhost:9200/_cluster/pending_tasks?v
 
-elif [[ $ARG1 == "threadpool" ]] ; then
+#elif [[ $ARG1 == "threadpool" ]] ; then
 
-    oc exec -n $es_ns $es_pod -c elasticsearch -- curl -s --key /etc/elasticsearch/secret/admin-key --cert /etc/elasticsearch/secret/admin-cert --cacert /etc/elasticsearch/secret/admin-ca https://localhost:9200/_cluster/thread_pool?v
+#    oc exec -n $es_ns $es_pod -c elasticsearch -- curl -s --key /etc/elasticsearch/secret/admin-key --cert /etc/elasticsearch/secret/admin-cert --cacert /etc/elasticsearch/secret/admin-ca https://localhost:9200/_cluster/thread_pool?v
 
 elif [[ $ARG1 == "info" ]] ; then
 
