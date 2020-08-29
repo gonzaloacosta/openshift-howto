@@ -22,3 +22,4 @@ How to and Deep Dive on Openshift Container Platform
 15. [Red Hat Technicals Tips, guides and Troubleshooting](https://access.redhat.com/articles/4217411)
 16. [Opeshift vSphere Dynamic Provision](howto/openshift-vmware-dynamic-provision.sh)
 17. [Opeshift Audit Logs](howto/openshift-audit-logs.sh)
+18. [Openshift ElasticSearch CLI](howto/openshift-elasticsearch-cli.md)
