@@ -2,7 +2,7 @@
 
 ## Resumen de filtros para usar en Kibana
 
-1.  Filtros por texto
+### 1.  Filtros por texto
 
 Podemos hacer filtros por texto con las siguientes entradas. 
 
@@ -23,7 +23,7 @@ Chrome
 chorm*
 ```
 
-2. Busquedas por campos
+### 2. Busquedas por campos
 
 En este apartado vamos abuscar información por campo en particular. La sintaxis es:
 
@@ -48,7 +48,7 @@ bytes:{65 TO 99}
 _exists_:name
 ```
 
-3. Declaraciones lógicas
+### 3. Declaraciones lógicas
 
 Podemos utilizar concatenadores lógicos para poder hacer las consultas con AND y OR
 
