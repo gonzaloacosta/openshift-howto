@@ -1034,3 +1034,18 @@ sh-4.2#
 * Hay nuevos nodos adicionales uno en cada zona.
 * En caso de escalado horizontal, los datos existentes en los viejos nodos de OSD son equilibrados con los nuevos nodos OSD para poder equilibrar la carga.
 
+## Conclusiones
+
+Teniendo en cuenta que OCS es una solución competa de storage es necesario tener en cuenta que los recurso de computo como de storage son elevados y hay que costearlos correctamente. Como solución de storage completa es una excelente opción por la facilidad de uso. 
+
+Los pasos a seguir de este docuemento serán:
+
+* Verificamos en profundidad de escenarios crítidos.
+* Pruebas de alta disponibilidad y resiliencia.
+* Pruebas de escalabilidad y reducción.
+* Replicación de volumenes sobre otras soluciones.
+
+## Links
+
+* [Red Hat Openshift Container Storage](https://access.redhat.com/documentation/en-us/red_hat_openshift_container_storage/4.4/)
+* [Ceph Block Device](https://docs.ceph.com/docs/master/rbd/)
