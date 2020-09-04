@@ -183,16 +183,19 @@ elif [[ $ARG1 == "health" ]] ; then
     echo "------------------------------------------------------------------------------"
     echo "Elasticseach Health Report"
     echo "------------------------------------------------------------------------------"
+
     oc exec -n $es_ns $es_pod -c elasticsearch -- curl -s --key /etc/elasticsearch/secret/admin-key --cert /etc/elasticsearch/secret/admin-cert --cacert /etc/elasticsearch/secret/admin-ca https://localhost:9200/_cat/health?v
 
     echo "------------------------------------------------------------------------------"
     echo "Nodes"
     echo "------------------------------------------------------------------------------"
+
     oc exec -n $es_ns $es_pod -c elasticsearch -- curl -s --key /etc/elasticsearch/secret/admin-key --cert /etc/elasticsearch/secret/admin-cert --cacert /etc/elasticsearch/secret/admin-ca https://localhost:9200/_cat/nodes?v
     
     echo "------------------------------------------------------------------------------"
     echo "Master"
     echo "------------------------------------------------------------------------------"
+
     oc exec -n $es_ns $es_pod -c elasticsearch -- curl -s --key /etc/elasticsearch/secret/admin-key --cert /etc/elasticsearch/secret/admin-cert --cacert /etc/elasticsearch/secret/admin-ca https://localhost:9200/_cat/master?v    
 
 elif [[ $ARG1 == "tasks" ]] ; then
@@ -207,6 +210,46 @@ elif [[ $ARG1 == "threadpool" ]] ; then
 #    oc exec -n $es_ns $es_pod -c elasticsearch -- curl -s --key /etc/elasticsearch/secret/admin-key --cert /etc/elasticsearch/secret/admin-cert --cacert /etc/elasticsearch/secret/admin-ca -XPUT https://localhost:9200/$ARG3/_settings -d '{ "index" : { "number_of_replicas" : 2 } }'
 #    oc exec -n $es_ns $es_pod -c elasticsearch -- curl -s --key /etc/elasticsearch/secret/admin-key --cert /etc/elasticsearch/secret/admin-cert --cacert /etc/elasticsearch/secret/admin-ca -XPUT https://localhost:9200/$ARG3/_settings -d "'"{ "index" : { "number_of_replicas" : $ARG2 } }"'"
 #    oc exec -n $es_ns $es_pod -c elasticsearch -- curl -s --key /etc/elasticsearch/secret/admin-key --cert /etc/elasticsearch/secret/admin-cert --cacert /etc/elasticsearch/secret/admin-ca -XPUT https://localhost:9200/*/_settings -d '{ "index" : { "number_of_replicas" : 2 } }
+
+elif [[ $ARG1 == "deletestack" ]] ; then
+
+    echo -n "Proceed to delete ALL the Cluster Logging Stack? [y/n]: "
+    read ans
+
+    if [[ $ans == "y" || $ans == "yes" ]]; then
+
+        echo -n "PLEASE CONFIRM AGAIN BECAUSE ALL THE STACK WILL BE DELETED!! [y/n]: "
+        read confim
+
+        if [[ $confim == "y" || $confim == "yes" ]]; then
+
+            echo "OK, ALL THE STACK WILL BE DELETED!"
+            oc delete clusterlogging instance -n openshift-logging
+            sleep 2
+            echo -n "Do you need deleted the data into pvc? [y/n]"
+            read check_pvc
+
+            if [[ $check_pvc == "y" || $check_pvc == "yes" ]] ; then
+
+                oc delete pvc --all -n openshift-logging
+
+            else
+
+                echo "The PVC do not DELETED, your information is SAFE!!"
+
+            fi
+
+        else
+
+            echo "Your Cluster Logging is SAFE!!"
+
+        fi
+
+    else
+
+        echo "Your Cluster Logging is SAFE!!"
+
+    fi
 
 elif [[ $ARG1 == "info" ]] ; then
 

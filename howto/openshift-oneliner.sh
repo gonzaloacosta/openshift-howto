@@ -102,3 +102,8 @@ oc get is python -n openshift --template='{{.metadata.name}}{{range .spec.tags}}
 
 # Patch
 oc patch clusterlogging -n openshift-logging instance -p  '{"spec":{"logStore":{"elasticsearch":{"resources":{"limits":{"cpu":"1500m"}}}}}}'
+
+# oc adm top pods
+oc adm top pods --all-namespaces | awk 'BEGIN{"date +'%Y-%m-%d-%H:%M:%S'"|getline d;} {if(NR>1) print d,","$1","$2","$3","$4}' | head -10
+
+oc adm top pods --sort-by=cpu --all-namespaces | awk 'BEGIN{"date +'%Y-%m-%d-%H:%M:%S'"|getline d;} {if(NR>1) print d,","$1","$2","$3","$4}' | head -10
