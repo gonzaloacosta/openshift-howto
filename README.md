@@ -24,4 +24,5 @@ How to and Deep Dive on Openshift Container Platform
 17. [Opeshift Audit Logs](howto/openshift-audit-logs.sh)
 18. [Openshift ElasticSearch CLI](howto/openshift-elasticsearch-cli.md)
 19. [Openshfit Logging Kibana Queries](howto/openshift-elasticsearch-queries.md)
-20. [Openshift AlertManager Config example](howto/openshift-monitoring-alertmanager.md)
+20. [Openshift AlertManager Config Example](howto/openshift-monitoring-alertmanager.md)
+21. [Openshift Container Storage](howto/openshift-container-storage-v4.md)
