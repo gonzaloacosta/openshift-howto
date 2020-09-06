@@ -1049,3 +1049,4 @@ Los pasos a seguir de este docuemento serán:
 
 * [Red Hat Openshift Container Storage](https://access.redhat.com/documentation/en-us/red_hat_openshift_container_storage/4.4/)
 * [Ceph Block Device](https://docs.ceph.com/docs/master/rbd/)
+* [OCS Training](https://github.com/red-hat-storage/ocs-training)
