@@ -3,20 +3,20 @@
 ## Tabla de Contenido
 
 *Kubernetes Service Deep Dive*
-* 1 - Introducción
-* 2 - ¿Cómo conectamos pod en Openshift?
-* 3 - Kubernetes Services
-* 4 - Documentación
-* 5 - Services Type
+* Introducción
+* ¿Cómo conectamos pod en Openshift?
+* Kubernetes Services
+* Documentación
+* Services Type
   * ClusterIP
     * Endpoints
     * IPTables
   * NodePort
   * ExternalNamne
   * LoadBalancer
-* 6 - Conclusiones
+* Conclusiones
 
-## 1. Introducción
+## Introducción
 
 Cuando comenzamos a nadar por el mundo de los contenedores de la mano de Openshift o de Kubernetes, inmediatamente comenzamos a disfrutar de los beneficios de buildear, desplegar y exponer las bellas aplicaciones. Lanzamos, ubicamos y eliminamos pods por todos los rincones del cluster. Todos trabajamos felices hasta que las cosas por algun motivo comienzan a comportarse de manera inadecuada y tenemos que verificar que es lo que sucede.
 
@@ -29,7 +29,7 @@ Los escenarios son los siguientes.
 * Conexión Interna entre aplicaciones dentro de Openshfit.
 * Conexión Externa a una aplicación dentro de Openshift.
 
-## 2. ¿Cómo conectamos pod en Openshift?
+## ¿Cómo conectamos pod en Openshift?
 
 En el mundo tangible de un centro de datos tenemos grandes redes donde participan diferentes componentes de red. Tradicionalmente tenemos un servidores, cada servidor con una interfaz de red. Un cable para conectar el servidor con un dispositivo central, el switch. Este dispositivo nos permite concentra una gran cantidad de servidor o dispositivos de red para que entre ellos puedan dialogar. 
 
@@ -53,7 +53,7 @@ Si un pod de otro servicio quisiera consumir el servicio ofrecido por la `app-a`
 
 <img src="images/k8s-service-2.png" alt="services" title="Network" width="350" eight="200" />
 
-## 3. Kubernetes Services
+## Kubernetes Services
 
 Dentro de openshift un servicio identifica un único punto de acceso a múltiples pods y es definido por medio del recurso llamado `service` en la API de Kuberntes y que hereda Openshift. Pero bien, como se implementan técnicamente?.
 
@@ -61,7 +61,7 @@ Como hemos visto anteriormente un servicio (service) asemeja el funcionamiento d
 
 Veamos como se define un servicio, que tipos existen y como se implementan estas series de reglas.
 
-## 4. Documentación
+## Documentación
 
 Para ver el detalle completo del funcionamiento del recurso `service` dentro de kubernetes pueden seguir este [link](https://kubernetes.io/docs/concepts/services-networking/service/) que tiene el detalle oficial del recurso. Tambien es posible y muy útil consultar la documentación por medio de la línea de comandos de cada uno de los argumentos que acepta el recurso. Para esto podemos revisarlo de la siguente manera.
 
@@ -80,7 +80,7 @@ DESCRIPTION:
 
 Donde obtenemos la primer linea de argumentos que definen el recurso, si quisieramos indigar en las sub opciones de cada opcion, solo tenemos que concatenar las opciones por ejemplo `oc explain service.spec.type`. 
 
-## 5. Services Type
+## Services Type
 
 El tipo de servicio define cómo los servicios se exponen y se consumen. Los tipos son:
 
@@ -91,7 +91,7 @@ El tipo de servicio define cómo los servicios se exponen y se consumen. Los tip
 
 Vemos como son definidos los servicios.
 
-## 5.1. ClusterIP
+## ClusterIP
 
 Openshift nos permite crear servicios de multiples maneras sea de la manera mas tradicional definiendo manifiestos de cada uno de los recursos, utiliznado la herramienta `oc new-app` para lanzar un [`template`](https://docs.openshift.com/container-platform/4.5/openshift_images/using-templates.html) o construir una aplicación desde el código fuente. En este caso vamos a utilizar `oc new-app` para poder desplegar un templates y crear multiples recursos y entre ellos el recurso `services`.
 
@@ -349,7 +349,7 @@ sh-4.2#
 
 En este caso de tres réplicas, pero la probabilidad cambia y esto indica que el %33.33 de los paquetes caerán en modo `random` en la primer regla. Del %76,66 de los paquetes restantes, el %50 de esos %76.66 caerá en la segunda regla y lo que reste caera en la última regla. Para conexiones por ráfagas, como GETs a un API REST, vimos que las cantidad de conexiones se distribuyen de manera homogenea, no así en ciertos escenarios donde se puede aplicar afinidad y esto viene acompañado de caso de uso. Generalmente vimos que se distribuye el tráfico de manera homogenea entre los pods pero depende de la naturaleza de la aplicación.
 
-## 5.2. NodePort
+## NodePort
 
 `NodePort`, es el primer método de acceso que aprendemos al comenzar a trabajar con `Kubernetes`, se ve al momento de aprender de kubernetes, la lógica es simple, reservamos un puerto por arriba del 30.000 asignado de manera dinmica en caso de no ser especificado. Este puerto se levanta en todos los nodos del cluster y cada nodo podra rutear el puerto al pod del servicio que corresponda. Esta modalidad nos permite poder consumir le servicio que recide en el pod pero a traves de un proxy pass con la ip del nodo. Supongamos el siguiente escenario.
 
@@ -481,7 +481,7 @@ sh-4.2# iptables-save | grep KUBE-SVC-5YXNK7KOCSOUM3AE
 
 Como vemos podemos ver el `nodePort` trabaja con conjunto con la ip de `ClusterIP`
 
-### 5.3. ExternalName
+### ExternalName
 
 El tipo de servicio `ExternalName` sirve para mapear un dirección url externa con un servicio. Esta dirección externa no es resuelta por el servicio de dns interno de Openshift (CoreDNS) sino es un registro de tipo A o CNAME externo. 
 
@@ -514,7 +514,7 @@ $ oc rsh django-psql-example-1-grddz
 
 La ventaja es que por ejemplo, si tuvieramos un backup de s3 para DEV, TEST y PROD, en la definición de nuestra aplicaciones solo llamariamos al servicio de la misma manera en todos los ambientes, solo cambiaría el endpoint en cada uno de los servicios.
 
-## 5.4. Balancer
+## LoadBalancer
 
 El tipo de servicio `Load Balancer` es utilizado en ambientes de nube como AWS, Azure, GCP, etc y permite relacionar un servicio con un dispositivo externo como un load balancer. Por ejemplo en este ambinete usamos un cluster en  AWS al crear el servicio es creado un ALB con endpoint los nodos del cluster en un puerto expuesto como `nodePort`, puerto superior al `30000`. Exponemos el servicio con `oc expose`.
 
@@ -580,7 +580,7 @@ sh-4.2#
 ```
 
 
-## 6. Conclusiones
+## Conclusiones
 
 En esta entrada nos pareció necesario poder indagar en este aspecto que no siempre es tocado en profundiad y es facil poder confundir ciertos conceptos claves. El entender de manera correcta el funcionamiento de cada uno de los componentes de Openshift nos permite de realizar analisis de situación y un troubleshooting rapido para ahorrarnos horas de trabajo de busqueda.
 
@@ -594,7 +594,7 @@ En esta entrada nos pareció necesario poder indagar en este aspecto que no siem
 - ¿Cómo abordamos los patrones de diseño de multiples ingress controller y shadering de pod routes?.
 
 
-## 7. Links
+## Links
 
 + [Iptables random --probability](https://scalingo.com/blog/iptables)
 + [TcpDump en Openshift](https://access.redhat.com/solutions/4537671)
