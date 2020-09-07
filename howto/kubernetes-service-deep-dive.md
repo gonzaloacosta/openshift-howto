@@ -2,18 +2,19 @@
 
 ## Tabla de Contenido
 
-* Kubernetes Service Deep Dive
-  * 1. Introducción
-  * 2. ¿Cómo conectamos pod en Openshift?
-  * 3. Kubernetes Services
-  * 4. Documentación
-  * 5. Services Type
-    * 1. ClusterIP
-      * a. Endpoints
-      * b. IPTables
-    * 2. NodePort
-    * 3. ExternalNamne
-    * 4. LoadBalancer
+*Kubernetes Service Deep Dive*
+* 1 - Introducción
+* 2 - ¿Cómo conectamos pod en Openshift?
+* 3 - Kubernetes Services
+* 4 - Documentación
+* 5 - Services Type
+  * ClusterIP
+    * Endpoints
+    * IPTables
+  * NodePort
+  * ExternalNamne
+  * LoadBalancer
+* 6 - Conclusiones
 
 ## 1. Introducción
 
