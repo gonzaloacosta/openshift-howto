@@ -41,23 +41,25 @@ Si nosotros quisieramos tener multiples réplicas de una aplicación, tendríamo
 <img src="images/server-network-lb.png" alt="services" title="Network" width="400"/>
 
 
-Ahora bien, en el mundo de los contenedores es exactamente igual, en vez de `servidores` tenemos `Pods` con intefaces virtuales cada uno y se conectan a los puertos de un `switch virtual`. Como verán, es lo mismo que en el ambiente físico.
+Ahora bien, en el mundo de los contenedores es exactamente igual, en vez de `servidores` tenemos `Pods` con intefaces virtuales y se conectan a los puertos de un `switch virtual`. Como verán, es lo mismo que en el ambiente físico.
 
 <img src="images/openshift-network-pod.png" alt="services" title="Network" width="800"/>
 
-Ahora bien, las ventajas de utilizar un cluster de Openshift es poder tener múltiples réplicas de nuestras aplicaciones y nuestras aplicaciones se aplicaciones se alojan en `contenedores` en un `pod`. Esto es multiples `pods` de una misma aplicación. Como en el ambiente tradicional necesitamos algún mecanismo que nos permita un balanceo de carga  y nos brinde un único punto de acceso como lo hace el `load balancer`. Esto en Kubernetes y Openshift es resuelto internamente con un recurso llamado `services`.
+Ahora bien, las ventajas de utilizar un cluster de Openshift es poder tener múltiples réplicas de nuestras aplicaciones. La unidad de delivery de aplicaciones en kubernetes es el `pod`, dentro de un `pod` podemos definir uno o mas `contenedores`. Este objeto `pod` es lo que replicamos multiple cantidad de veces. En el ambiente tradicional tenemos un `load balancer` que nos permite acceder por un unico punto de acceso a multiples servidores, en el caso de kubernetes de manera interna este servicio es ofrecido por un recurso llamado `service`.
 
 <img src="images/k8s-service-2.png" alt="services" title="Network" width="400"/>
 
-Si un el `pod rojo` quisiera consumir el servicio ofrecido por los `pod azules` no llamaría a la ip de los pods directamente sino que llamaría a la ip del servicio `servicio` y es la ip del servicio quien reenvia el tráfico a uno de los pods. Igual que en ambiente físico con los load balancer.
+Si un el `pod rojo` quisiera consumir el servicio ofrecido por los `pods azules` no llamaría a la ip de los pods directamente sino que llamaría a la ip del `servicio` y es la ip del `servicio` por medio de un mecanismo quien distribuye el trafico entre los `pods azules`. 
 
 ## Kubernetes Services
 
-`Service` en Openshift es una abstraccion de un servicio de software que nos permite que consiste en relacionar una ip `ClusterIP` un puerto con un conjuto de `pods` en multiples nodos agrupados por un `selector`. La ip de `ClusterIP` es obtenida de una red interna dedicada para sevicios `ServiceNetwork`. Simple, pero ¿Cómo se implementan técnicamente?
+Los `Services` en Openshift son una abstracción de un servicio de software que nos permite relacionar una ip (`ClusterIP`), un puerto (`Port`) con un conjuto de `pods` (`Endpoints`) distribuidos en múltiples nodos. Los `Endpoints` agrupados por un `selector` (label de selección). La ip de `ClusterIP` es obtenida de una red interna dedicada para sevicios (`ServiceNetwork`). Es simple pero ¿Cómo se implementan técnicamente?.
 
-Como hemos visto anteriormente un `service` asemeja el funcionamiento de un proxy o load balancer externo pero la funcionalidad no esta implementada en un pod, sino que en este caso los `services` estan definidos por *múltiples reglas de iptables distibuidas en todos los nodos de kubernetes u openshift*.
+Como hemos visto anteriormente un `service` se asemeja a el funcionamiento de un proxy o load balancer externo pero la funcionalidad no está implementada en un pod, en este caso los `services` estan definidos por *múltiples reglas de iptables distibuidas en todos los nodos de kubernetes u openshift*.
 
 Veamos como se define un `service`, que tipos existen y cómo se implementan estas series de reglas de iptables.
+
+El recurso `Service` define:
 
 * Service (Proxy)
   * ClusterIP
@@ -66,7 +68,7 @@ Veamos como se define un `service`, que tipos existen y cómo se implementan est
 
 ## Documentación
 
-Para ver el detalle completo del funcionamiento del recurso `service` dentro de kubernetes pueden seguir este [link](https://kubernetes.io/docs/concepts/services-networking/service/) que tiene el detalle oficial del recurso. También es posible y muy útil consultar la documentación por medio de la línea de comandos de cada uno de los argumentos que acepta el recurso. Para esto podemos revisarlo de la siguente manera.
+Para ver el detalle completo del funcionamiento del recurso servicio (service) dentro de kubernetes pueden seguir este [link](https://kubernetes.io/docs/concepts/services-networking/service/) que tiene el detalle oficial de la documentación de kubernetes. Otra manera útil es consultar la documentación por medio de la línea de comandos.
 
 ```s
 $ oc explain service
@@ -81,11 +83,11 @@ DESCRIPTION:
 ...
 ```
 
-Si quisieramos indigar en las sub opciones de cada opcion, solo tenemos que concatenar las opciones por ejemplo `oc explain service.spec.type`. 
+Si quisieramos indigar en sub opciones solo tenemos que concatenar la especificación, por ejemplo `oc explain service.spec.type`. 
 
 ## Services Type
 
-El tipo de servicio define cómo los servicios se exponen y se consumen. Los tipos son:
+El tipo de servicio define cómo los servicios se exponen y se consumen. Estan definidos por tipos:
 
 * `ClusterIP`: Valor por defecto. Aloca una ip de un rango interno del cluster, rango no ruteado y no alcanzable desde el exterior. La ip de `ClusterIP` es el único punto de acceso para balancear entre los distintos `pods` agrupados por un `selector` en un recurso `EndPoints`.
 
@@ -95,11 +97,11 @@ El tipo de servicio define cómo los servicios se exponen y se consumen. Los tip
 
 * `LoadBalancer`: Construido sobre NodePort, al definir un servicio crea un load balancer externo en un servicio de nube. Habla con la API de AWS, Azure, GCP.
 
-Vemos como son definidos los servicios.
+Veamos como son definidos los servicios.
 
 ## ClusterIP
 
-Openshift nos permite crear recursos de multiples maneras. La mas tradicional es definiendo manifiestos para cada recurso, en Openshift tenemos una herramienta `oc new-app` para crear aplicaciones y entre ellas el recurso `services`. En este caso desplegaremos una aplicación `django-psql-example` por medio de `oc new-app` que crear un frontend en django, su servicio, una base de datos postgresql y su servicio asociado.
+Openshift nos permite crear recursos de múltiples maneras. La más tradicional es definiendo `manifiestos` para cada recurso. En Openshift tenemos una herramienta `oc new-app` para crear aplicaciones y entre ellas el recurso `services`. En este caso desplegaremos una aplicación `django-psql-example` por medio de `oc new-app` que crear un frontend en django, su servicio, una base de datos postgresql y su servicio.
 
 
 ```s
@@ -117,7 +119,7 @@ oc new-app django-psql-example
     deploymentconfig.apps.openshift.io "postgresql" created
 ```
 
-En el output de la instrucción encontraremos el detalle de todos los recurso creados y con ellos el recurso `services`. Si inspeccionamos la salida veremos dos `services` el del front `django-psql-example` y el de la base `postgresql`.
+En el output de la instrucción encontraremos el detalle de todos los recurso creados y con ellos el recurso `services`. Si inspeccionamos la salida veremos dos servicios el del front `django-psql-example` y el de la base `postgresql`.
 
 ```s
 $ oc get services
@@ -126,7 +128,7 @@ django-psql-example   ClusterIP   172.30.85.132   <none>        8080/TCP   2m36s
 postgresql            ClusterIP   172.30.194.95   <none>        5432/TCP   2m36s
 ```
 
-Ahora bien, en esta salida encontramos el detalle de tipo de `service` que es `ClusterIP`, la ip que representa el único punto de acceso y el puerto. Veamos la definición del servicio `django-psql-example` en formato yaml.
+Ahora bien, en esta salida encontramos el detalle de tipo de `servicio` que es `ClusterIP`, la ip que representa el único punto de acceso y el puerto. Veamos la definición del servicio `django-psql-example` en formato yaml.
 
 ```yaml
 $ oc get service django-psql-example -o yaml
@@ -212,7 +214,7 @@ subsets:
     protocol: TCP
 ```
 
-Interesante, vemos la ip y nombre del pod, el nodo donde esta corriendo y los puertos que escuchan el pod. Listemos el pod por medio del selector definido en el recurso service. 
+Interesante!, veamos la ip y nombre del pod, el nodo donde esta corriendo y los puertos que escuchan el pod. Listemos el pod por medio del selector definido en el recurso service. 
 
 ```s
 $ oc get pods -o wide -l name=django-psql-example
@@ -282,9 +284,9 @@ django-psql-example-1-hhng7   1/1     Running   0          60m     10.254.5.61  
 
 ¿Cómo es el proceso de escalado horizontal o aumento de réplica?. 
 
-Cuando indicamos escalar un nuevo pod lo hacemos a través de la `API de Kubernetes` que es el único punto con el que un usuario habla con el cluster indicando el `estado deseado (desire state)`. Una vez que la API recibe el request y lo autoriza, almacena en su base de datos clave/valor (`etcd`). El `scheduler` descubre el nuevo estado y es el encargado de seleccionar el nodo donde se alojará este pod. Luego del proceso, setea el nodo en la definición del `pod`. El sistema `controller` es el encargado de mantener la cantidad de réplicas del pod descubre que existe una nueva réplica y dispara una tarea en el nodo y es `kubelet` (sysadmin del nodo) quien se encarga de levantar el pod indicandole al `runtime de contenedores (cri-io)` que cree el pod (y los contenedores). Por último es `kubeproxy` (netadmin) quién se encarga de definir las reglas de networking para el pod. El recurso de Openshift  `ReplicationController` y el nativo de Kubernets `ReplicaSet`, son los encargado de mantener las réplicas deseadas. 
+Para indicar el escalado de un nuevo `pod`, lo hacemos expresando el estado deseado por medio de la `API de Kubernetes`, único punto de acceso al cluster de kuberntes. Una vez que la API recibe el request, lo autentica y lo autoriza, almacena en su base de datos clave/valor (`etcd`). El `scheduler` descubre el nuevo estado y es el encargado de seleccionar el nodo donde se alojará este pod. Luego del proceso, setea el nodo en la definición del `pod`. El sistema `controller` es el encargado de mantener la cantidad de réplicas de los pods. En caso de descubrir que en la definición existen una nueva réplica, dispara una tarea en el nodo donde se alojará el pod. Es `kubelet` (sysadmin del nodo) quien se encarga de levantar el pod indicandole al `runtime de contenedores (cri-io)` que cree el o los contenedores definidos en el `pod`. Por último es `kubeproxy` (netadmin) es quién se encarga de definir las reglas de networking para el pod. El recurso de Openshift  `ReplicationController` y el nativo de Kubernets `ReplicaSet`, son los encargado de mantener las réplicas deseadas. 
 
-Al momento de levantar un nuevo pod dos procesos son relevantes para decidir cuando van a agregarse a lista de `endopoints` las ips de los pods. Primero luego de un intervalo de tiempo es lanzado el probe de `readiness` y si este probe es exitoso es aquí cuando es considerado el pod como `Ready` para poder recibir conexiones y se agrega a la lista de `endpoints`.
+Al momento de levantar un nuevo pod dos procesos son relevantes para decidir cuando van a agregarse a lista de `endopoints`. En primer lugar, luego de un intervalo definido en el `readiness probe` es lanzado un chequeo (ej, GET HTTP) para verificar si el proceso esta listo para recibir trafico de negocio. Si es exitoso el pod es considerado como `Ready` y es agregado a la lista de `Endpoints` para participar del balanceo.
 
 *Este mecanismo nos asegura que vamos a agregar a la lista de servicios solo los pods que estan listos para poder brindar servicio.*
 
@@ -292,11 +294,11 @@ Al momento de levantar un nuevo pod dos procesos son relevantes para decidir cua
 
 Ahora bien, ¿Qué tecnología usamos para distribuir el tráfico entre pods asociados a un servicio?, en todos los clusters de kubernetes un servicio es una abstracción de un proxy implementado por medio de reglas de iptables replicadas en todos los nodos del cluster y es [Kube-Proxy](https://docs.openshift.com/container-platform/4.5/networking/openshift_sdn/configuring-kube-proxy.html) quien las distribuye. 
 
-Primero veamos quien las implementan, esto cambia del color de Kubernetes que vayamos a utilizar. En el caso de Openshift se define en el `Operador de Networking` definido como un `Custom Resource Definition (CRDs)`, implementado en el proyecto `openshfit-sdn` y controlado por el pod del operador desplegado en el proyecto `openshift-sdn-operator`.
+Primero veamos quién las implementan, esto cambia segun el color de Kubernetes que vayamos a implementar. En el caso de Openshift existe un Cluster Operator, `Openshift Network Operator`. El Cluster Operator está implementado en el proyecto `openshfit-sdn-operator` y controla el despliegue en el proyecto `openshift-sdn`.
 
 El proyecto `openshift-sdn` tiene tres tipos de pods: los pods de `ovs-xxx` que son los procesos de `OpenVSwitch`, switch donde se conectan todos los pods dentro de un nodo; los pods de `sdn-controller-xxx` que son el controlador de la red definida por software de openshift (SDN, Software Defined Network) y los pods de `sdn-xxx` que son los pods en cada uno de los nodos del cluster que implementan las reglas de iptables y definen los `services`. Este ultimo pod es `kubeproxy` con sonbrero rojo.
 
-En los logs de los pods de `sdn-xxx` vamos encontrar estas entradas de manera repetida e indican que las reglas son sincronizadas, como hay un pod por cada nodo en cada nodo son replicas.
+Si vemos el log de los pods de `sdn-xxx` vamos encontrar estas entradas de manera repetida e indican que las reglas son sincronizadas periodicamente. 
 
 ```s
 $ oc logs sdn-hhshh
@@ -306,7 +308,7 @@ I0906 11:10:29.771057    2486 proxier.go:350] userspace syncProxyRules took 50.1
 ...
 ```
 
-Ahora bien, volamos a nuestro `service` y veamos donde estan implementadas las reglas de `iptables`. Para esto accedemos al pod y ejecutamos `iptables-save | grep 'test-services/django-psql-example'`
+Ahora bien, volvamos a la definición del servicio y veamos donde estan implementadas las reglas de `iptables`. Para esto accedemos al pod y ejecutamos `iptables-save | grep 'test-services/django-psql-example'`
 
 ```s
 $ oc rsh sdn-hhshh
@@ -316,7 +318,7 @@ sh-4.2# iptables-save | grep 'test-services/django-psql-example'
 sh-4.2#
 ```
  
-Que interesante!. La primer regla indica que va a ser aplicada a todo los paquetes que NO (!) tenga red origen `10.254.0.0/16`, destino `172.30.85.132/32` (la ip de ClusterIP) y con puerto destino `8080/TCP` aplica (-j) `KUBE-MARK-MASQ`. La segunda regla indica que todo lo que sea con destino `172.30.85.132/32`, port `8080/TCP` aplica la regla `KUBE-SVC-GIGN3HAIPPOO23F3`. Veamos ahora que indica la regla `KUBE-SVC-GIGN3HAIPPOO23F3`.
+Que interesante!. La primer regla indica que va a ser aplicada a todo los paquetes que NO (negación, !) tenga red origen `10.254.0.0/16`, destino `172.30.85.132/32` (la ip de ClusterIP) y con puerto destino `8080/TCP` aplica (-j) `KUBE-MARK-MASQ`. La segunda regla indica que todo lo que sea con destino `172.30.85.132/32`, port `8080/TCP` aplica la regla `KUBE-SVC-GIGN3HAIPPOO23F3`. Veamos ahora que indica la regla `KUBE-SVC-GIGN3HAIPPOO23F3`.
 
 ```s
 sh-4.2# iptables-save | grep KUBE-SVC-GIGN3HAIPPOO23F3
@@ -326,7 +328,7 @@ sh-4.2# iptables-save | grep KUBE-SVC-GIGN3HAIPPOO23F3
 -A KUBE-SVC-GIGN3HAIPPOO23F3 -j KUBE-SEP-JBBKRG73QF24CZJD
 ```
 
-Vemos que las segunda instrucción tiene el argumento `-m statistic --mode random --probability 0.50000000000` este argumento indica que el 50% de los paquetes serán aceptados por esta regla y serán tratados por la siguiente regla `KUBE-SEP-7ANA7OTZZO5QKVWN`, el 50% restante caerá a la regla siguente con destino `KUBE-SEP-JBBKRG73QF24CZJD`. Veamos que son estas últimas dos reglas.
+Veamos que las segunda instrucción tiene el argumento `-m statistic --mode random --probability 0.50000000000`. Este argumento indica que el 50% de los paquetes serán aceptados por esta línea redirigidos a la regla `KUBE-SEP-7ANA7OTZZO5QKVWN`, el 50% restante caerá a la línea siguente con destino `KUBE-SEP-JBBKRG73QF24CZJD`. Veamos que son estas últimas dos reglas.
 
 ```s
 sh-4.2# iptables-save | grep KUBE-SEP-7ANA7OTZZO5QKVWN
@@ -341,9 +343,9 @@ sh-4.2# iptables-save | grep KUBE-SEP-JBBKRG73QF24CZJD
 -A KUBE-SEP-JBBKRG73QF24CZJD -p tcp -m tcp -j DNAT --to-destination 10.254.5.61:8080
 ```
 
-En la última regla se aplica un `DNAT (Destination Network Address Translation)` hacia la ip `10.254.4.24:8080` que es la ip de nuestro pod que brinda el servicio. En la segunda regla vemos que aplica a la otra ip del pod `10.254.5.61:8080`. Esto nos garantiza que por medio de una politica `--random` con probabilidad de 50% para cada ip el trafico será distribuido.
+En la última regla se aplica un `DNAT (Destination Network Address Translation)` hacia la ip `10.254.4.24:8080` que es la ip de nuestro pod que brinda el servicio. En la segunda regla vemos que aplica a la otra ip del pod `10.254.5.61:8080`. Esto nos indica una aleatoriedad estadistica en la distribución del tráfico donde el 50% caerá en una y el restante en al otra.
 
-Pero que pasa si escalo la cantidad de pods como se distribuyen las probabilidades?. Escalo los pods a tres con `oc scale dc django-psql-example --replicas=3 -n test-services`
+Pero que pasa si escalo la cantidad de pods?. ¿ Cómo se distribuyen las probabilidades ?. Escalo los pods a tres con `oc scale dc django-psql-example --replicas=3 -n test-services` y veamos las distribuciones.
 
 ```s
 $ oc rsh sdn-hhshh
@@ -356,7 +358,9 @@ sh-4.2# iptables-save | grep KUBE-SVC-GIGN3HAIPPOO23F3
 sh-4.2#
 ```
 
-En este caso de tres réplicas, pero la probabilidad cambia y esto indica que el %33.33 de los paquetes caerán en `random mode` en la primer regla. Del %76,66 de los paquetes restantes, el %50 de esos %76.66 caerá en la segunda regla y lo que reste caera en la última regla. Para conexiones por ráfagas, como GETs a un API REST, vimos que las cantidad de conexiones se distribuyen de manera homogenea, no así en ciertos escenarios donde se puede aplicar afinidad y esto viene acompañado de caso de uso. Generalmente vimos que se distribuye el tráfico de manera homogenea entre los pods pero depende de la naturaleza de la aplicación.
+En el caso de tres réplicas, la probabilidad cambia. Indica que el %33.33 de los paquetes caerán en `random mode` en la primer línea. Del %76,66 de los paquetes restantes, el %50 de esos %76.66 caerá en la segunda línea y lo que reste caerá en la última línea. 
+
+Para conexiones por ráfagas, como GETs a un API REST, vimos que las cantidad de conexiones se distribuyen de manera homogenea, no así en ciertos escenarios donde se puede aplicar afinidad y esto viene acompañado de caso de uso. Generalmente el tráfico es distribuido de manera homogenea entre los pods. Siempre y cuando no haya algun tipo de afinidad definida.
 
 ## NodePort
 
@@ -364,9 +368,9 @@ En este caso de tres réplicas, pero la probabilidad cambia y esto indica que el
 
 <img src="images/k8s-service-nodeport.png" alt="services" title="Network" width="400"/>
 
-Un cliente como un dispositivo de red como un load balancer puede acceder al socket que corresponde a la ip de host con el puerto asignado dinamicamente, internamente el servicio redirigira el tráfico al pod que haya sido selecionado. Esto es útil para poder trabajar con Load Balancers y exponer nuestras aplicacion no solo via http/https, sino tambien vía socket tcp. La desventaja es que todos los nodos tendran el mismos puerto abierto para el servicio, en ambientes de Openshift no se recomienda utilizar esta tipo de servicio a no ser que sea justificado.
+Un cliente como un dispositivo de red como un load balancer puede acceder al socket que corresponde a la ip de host con el puerto asignado dinamicamente, internamente el servicio redirigirá el tráfico al pod que haya sido selecionado. Esto es útil para poder trabajar con Load Balancers y exponer nuestras aplicaciones no solo via http/https, sino tambien vía socket tcp. La desventaja es que todos los nodos del cluster abriran un puerto localmente para cada servicio, en ambientes con Openshift no se recomienda utilizar este tipo de servicio a no ser que sea justificado.
 
-Probemos como lo vemos desde la CLI, utilizamos la misma aplicación, y creamos el nuevo servicio con type port `NodePort`.  Borramos el servicio original para poder re-crearlo con el flag de `nodePort`.
+Probemos como lo vemos desde la linea de comandos. Utilizamos la misma aplicación y creamos el nuevo servicio con type port `NodePort`.  Borramos el servicio original para poder re-crearlo con el flag de `nodePort`.
 
 ```s
 $ oc delete svc django-psql-example
@@ -492,7 +496,7 @@ Como vemos podemos ver el `nodePort` trabaja con conjunto con la ip de `ClusterI
 
 El tipo de servicio `ExternalName` sirve para mapear un dirección url externa con un servicio. Esta dirección externa no es resuelta por el servicio de [DNS interno de Openshift (CoreDNS)](https://docs.openshift.com/container-platform/4.5/networking/dns-operator.html) sino es un registro de tipo A o CNAME externo. 
 
-Por ejemplo, podemos agregar un servicio interno para poder llegar a un servicio de S3 con MinIO externo al cluster hosteado en la ip 10.252.7.230 con entrada en el DNS externo `minio.ocp4.labs.semperti.local`.
+Por ejemplo, podemos agregar un servicio interno para poder llegar a un servicio de storage de objeto provisto por `MinIO` implementado externamente al cluster. MinIO, hosteado en la ip 10.252.7.230 con entrada en el DNS externo `minio.ocp4.labs.semperti.local`.
 
 ```s
 $ oc create service externalname  minio --external-name minio.ocp4.labs.semperti.local
