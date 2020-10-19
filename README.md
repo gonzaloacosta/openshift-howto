@@ -27,4 +27,4 @@ How to and Deep Dive on Openshift Container Platform
 20. [Openshift AlertManager Config Example](howto/openshift-monitoring-alertmanager.md)
 21. [Openshift Container Storage](howto/openshift-container-storage-v4.md)
 22. [Openshift Cluster Logging](howto/openshift-logging-how-to-add-old-pvc.md)
-22. [Openshift Monitoring - PromQL Queries](howto/openshift-monitoring-promql-queries.md)
+23. [Openshift Monitoring - PromQL Queries](howto/openshift-monitoring-promql-queries.md)
