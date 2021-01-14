@@ -1,4 +1,4 @@
-## MachineConfigPools
+# MachineConfigPools
 
 Con RHOCP3 era usal trabajar con tres grupos de nodos, nodos master, nodos worker y nodos de infraestructura. Los nodos de infraestructura tienen como fin solamente alojar servicios que son complementarios al funcionamiento del cluster como por ejemplo pod router, cluster logging, cluster metrics, integrated registry. 
 
@@ -12,15 +12,15 @@ oc label node $NODE node-role.kubernetes.io/infra=
 
 Al aplicarlo vamos a ver que en le listado de nodos los nodos de infraestructura pueden ser identificados pero si hacemos un upgrade del cluster, los nodos quedan por fuera y no son actualizados. Este comportamiento es esperado.
 
-#### Operadores en Openshift 4
+## Operadores en Openshift 4
 
 Como sabemos Openshift 4 está formado por un conjunto de operadores, en pocas palabras todo es administrador por un Operador. El sistema operativo, los updates y los cambios de configuración del los nodos RHCOS son administrado por el Machine Config Operator. Entender este operador es clave para poder administrar los nodos masters y workers correctamente al nuevo paradigma de administrador en Openshift 4.
 
-#### Machine Config Operator?
+## Machine Config Operator?
 
 MCO es un operador como cualquier otro pero a nivel cluster y es especialmente uno de la infraestructura de Openshift. Este administra el sistema operativo y mantiene el cluster actualizado en configuración. A través de MCO, los administradores de la plataforma pueden configurar y actualizar los servicios systemd, cri-o/kubelet, kernel, NetworkManger, etc sobre cada uno de los nodos. Para poder hacerlo MCO crea archivos MachineConfig que representan la configuración estatica de cada uno de los nodos. Luego aplica la configuración a cada nodo.
 
-#### Subcomponentes de Machine Config Operator.
+## Subcomponentes de Machine Config Operator.
 
 El MCO es un completo componente. Este posee varios subcomponentes y cada subcomponente realizar una tarea puntual diferente. Examinemos los subcomponentes.
 
@@ -32,11 +32,11 @@ El MCO es un completo componente. Este posee varios subcomponentes y cada subcom
 - Kubelet Config Controller
 + Machine Config Daemon
 
-#### Que hace Machine Config Controller?
+## ¿Qué hace Machine Config Controller?
 
 Machine config Controller comienza a ser utilizado una vez es instalado el cluster. Los objetivos del MCC son:
 
-+ Corrdinar upgrades de máquinas con la configuración definida en el objeto MachineConfig.
++ Cordinar upgrades de máquinas con la configuración definida en el objeto MachineConfig.
 + Provee opciones para controlar el upgrade por set de maquinas individuales.
 
 En pocas palabras este controlador genera Machine Config para los roles pre-definidos (master y workers) y monitorea si son modificados los MachineConfig CR (custom resource) existentes y si son creados nuevos MachineConfig. Cuando el controlador detecta cualquiera de los dos eventos, genera un nuevo objeto MachineConfig que contiene todas las configuraciones de maquinas basadas en MachineConfigSelector y cada MachineConfigPool.
@@ -59,11 +59,11 @@ Update Controller
 + Observa si un MachineConfigPool.Status.CurrentMachineConfig es actualizado.
 + Actualiza maquinas con el MachineConfig deseado y coordina con el demonio que está ejecutando en cada maquina.
 
-#### Machine Config
+## MachineConfig
 
 Habíamos mensionado el objeto MachineConfig, pero que es?. Es el fuente de la configuración de las máquinas y es usado para la instalación y el primer booteo, como tambien para los upgrades. El MachineConfig debe ser estatico. Ej. Este no debe contener links o path remotos para generar configuración dinámica. En pocas palabras define la configuración de las maquinas que usan RHCOS. Inicialmente usa un formato ignition, de manera que es posible administrar el storage, systemd, kernel, etc.
 
-#### Machine Config Pools
+## MachineConfigPools
 
 El MachineConfigPool es el objeto principal. El MachineConfigPool opera de manera similar como un RoleBinding donde son asociados roles y usuarios. Un MachineConfigPool asocia _nodes_ con _MachineConfig_.
 
@@ -76,7 +76,7 @@ El Render Controller en el MachineConfigController monitorea los MachineConfigPo
 ![Openshift Machine Config](images/openshift-machineconfig-2.png)
 
 
-#### Infra worker nodes
+## Infra worker nodes
 
 Ahora definiremos los nodos worker como nodos de infra. Originalmente tenemos dos roles worker y master. Los pasos para definirlos son los que siguen.
 
@@ -131,3 +131,28 @@ EOF
 oc label node <node> node-role.kubernetes.io/worker-
 oc label node <node> node-role.kubernetes.io/infra=
 ```
+
+
+## Documentación y problemas
+
+### Links para entender el funcionamiento de los MachineConfigPools y MachineConfig
+
+* [OpenShift Container Platform 4: How does Machine Config Pool work?](https://www.redhat.com/en/blog/openshift-container-platform-4-how-does-machine-config-pool-work)
+
+### Como crear MachineConfigPools Customs, por ejemplo para los Infra nodes.
+
+* [Custom pools](https://github.com/openshift/machine-config-operator/tree/master/docs)
+* [Custom Machine Config Pool in OpenShift 4](https://access.redhat.com/solutions/5688941)
+
+### Primeros problemas con MachineConfigPools (y no los últimos)
+
+* [Node in degraded state because of the use of a deleted machineconfig: machineconfig.machineconfiguration.openshift.io; rendered-$[custom-machine-config] not found.](https://access.redhat.com/solutions/4970731)
+
+    Esto pasa cuando un MachineConfig es eliminado, el MachineConfigController no reconoce un rollback a un render-xxxx previo, esto hace que el MachineConfigPool quede en `Degradated`. La solución setear a mano los render-xxxx MachineConfig existente en los annotations de los nodos, esto lo hacemos editando el nodo.
+
+* [MachineConfigPool stuck in degraded after applying a modification in OpenShift Container Platform 4.x](https://access.redhat.com/solutions/5244121)
+
+    Esto puede pasar cuando los archivos creados dentro de un `MachineConfig` no son seteados dentro del nodo RHCOS.
+
+* [Managing SSH Keys with the MCD](https://github.com/openshift/machine-config-operator/blob/master/docs/Update-SSHKeys.md)
+* [How to force validation of failing / stuck MachineConfigurations in Red Hat OpenShift Container Platform 4.x?](https://access.redhat.com/solutions/5414371)

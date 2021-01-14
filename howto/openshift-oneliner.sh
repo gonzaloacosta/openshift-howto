@@ -111,3 +111,8 @@ oc adm top pods --sort-by=cpu --all-namespaces | awk 'BEGIN{"date +'%Y-%m-%d-%H:
 
 # Reporte Total de PV en Gi
 oc get pv | awk 'BEGIN{print "PV\tSuma Parcial" ; sum=0} {if ($2 ~ /Gi/) { gsub(/Gi/,"",$2) ; sum+=$2 ; print $2"Gi\t"sum"Gi" } else if ($2 ~ /Mi/) { gsub(/Mi/,"",$2) ; sum+=$2/1024 ; print $2"Mi\t"sum"Gi" } } END{print "Total Suma PV:" sum}'
+
+# Docker rmi with tag
+docker rmi $(docker images -aq) 
+
+ 
