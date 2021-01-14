@@ -132,6 +132,18 @@ oc label node <node> node-role.kubernetes.io/worker-
 oc label node <node> node-role.kubernetes.io/infra=
 ```
 
+## Ingresar a los nodos desde el demonio de MachineConfigDeamon
+
+```
+oc get pods -n openshift-machine-config-operator -l k8s-app=machine-config-daemon --field-selector "spec.nodeName=worker0.ocp4.labs.semperti.local"
+NAME                          READY   STATUS    RESTARTS   AGE
+machine-config-daemon-jxvrw   2/2     Running   0          4h9m
+```
+
+```
+oc rsh -n openshift-machine-config-operator machine-config-daemon-jxvrw chroot /rootfs cat /etc/customtest
+custom
+```
 
 ## Documentación y problemas
 
@@ -153,6 +165,11 @@ oc label node <node> node-role.kubernetes.io/infra=
 * [MachineConfigPool stuck in degraded after applying a modification in OpenShift Container Platform 4.x](https://access.redhat.com/solutions/5244121)
 
     Esto puede pasar cuando los archivos creados dentro de un `MachineConfig` no son seteados dentro del nodo RHCOS.
+    
+* [How to control Node updates in Red Hat OpenShift Container Platform 4](https://access.redhat.com/solutions/4669561)
+    
+    Con esta nota controlamos el numero de nodos que vamos a actualizar en cada modificación/agregado de los MC.
 
 * [Managing SSH Keys with the MCD](https://github.com/openshift/machine-config-operator/blob/master/docs/Update-SSHKeys.md)
+
 * [How to force validation of failing / stuck MachineConfigurations in Red Hat OpenShift Container Platform 4.x?](https://access.redhat.com/solutions/5414371)
