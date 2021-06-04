@@ -2,8 +2,8 @@
 # Instalacion de clientes para deploy de OCP IPI
 
 export OCP_VERSION=4.5.13
-export AWSKEY=AKIATDT5IKPUTDWINOGA
-export AWSSECRETKEY=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
+export AWSKEY=AKIAVIV7HIY4RDDUEAHG
+export AWSSECRETKEY=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
 export REGION=us-east-2
 
 echo "Install Tools"

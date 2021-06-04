@@ -115,4 +115,9 @@ oc get pv | awk 'BEGIN{print "PV\tSuma Parcial" ; sum=0} {if ($2 ~ /Gi/) { gsub(
 # Docker rmi with tag
 docker rmi $(docker images -aq) 
 
- 
+# Buscar los recursos asociados a un namespaces
+kubectl api-resources --verbs=list --namespaced -o name | xargs -n 1 kubectl get --show-kind --ignore-not-found
+
+# Buscar todos los recursos asociados a un namespace en openshift
+# https://access.redhat.com/solutions/4165791
+oc api-resources --verbs=list --namespaced -o name | xargs -n 1 oc get --show-kind --ignore-not-found -n $PROJECT_NAME

@@ -5,18 +5,20 @@
 
 echo "Install Openshift Cluster IPI"
 
-export GUID=74d2
-export SUBDOMAIN=sandbox460.opentlc.com
+export GUID=ab1e
+export SUBDOMAIN=sandbox718.opentlc.com
 export CLUSTER_NAME=cluster-$GUID
-export SSH_KEY_PUB_FILE=id_rsa_$GUID
-export PULL_SECRET=$(cat pull_secret.json)
+export SSH_KEY_PUB_FILE=id_rsa_$GUID.pub
+export PULL_SECRET=$(cat ~/pullsecret.json)
 
 
 mkdir -p ${CLUSTER_NAME}
 
+cd ${CLUSTER_NAME}
+
 ssh-keygen -t rsa -b 4096 -N '' -f ${HOME}/.ssh/${SSH_KEY_PUB_FILE}
 
-export SSH_KEY_PUB=$(cat $HOME/.ssh/SSH_KEY_PUB_FILE)
+export SSH_KEY_PUB=$(cat $HOME/.ssh/$SSH_KEY_PUB_FILE)
 
 cat << EOF > ${CLUSTER_NAME}/install-config.yaml
 apiVersion: v1
@@ -49,8 +51,8 @@ platform:
   aws:
     region: us-east-2
 publish: External
-pullSecret: ${PULL_SECRET}
-sshkey: ${SSH_KEY_PUB}
+pullSecret: "${PULL_SECRET}"
+sshkey: "${SSH_KEY_PUB}"
 EOF
 
 openshift-install create cluster --dir ${CLUSTER_NAME}
