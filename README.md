@@ -28,3 +28,10 @@ How to and Deep Dive on Openshift Container Platform
 21. [Openshift Container Storage](howto/openshift-container-storage-v4.md)
 22. [Openshift Cluster Logging](howto/openshift-logging-how-to-add-old-pvc.md)
 23. [Openshift Monitoring - PromQL Queries](howto/openshift-monitoring-promql-queries.md)
+24. [How to deploy a simple pod for Troubleshooting](howto/how-to-generate-pod-test.md)
+
+
+## Workshops
+
+1. [Development 2020-08](workshops/workshop-development-agosto-2020.pdf)
+2. [Administration 2020-08](workshops/workshop-administration-agosto-2020.pdf)
