@@ -33,5 +33,5 @@ How to and Deep Dive on Openshift Container Platform
 
 ## Workshops
 
-1. [Development 2020-08](workshops/workshop-development-agosto-2020.pdf)
-2. [Administration 2020-08](workshops/workshop-administration-agosto-2020.pdf)
+1. [Development](workshops/workshop-development-agosto-2020.pdf)
+2. [Administration](workshops/workshop-administration-agosto-2020.pdf)
