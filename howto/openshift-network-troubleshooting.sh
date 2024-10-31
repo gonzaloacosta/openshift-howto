@@ -27,7 +27,7 @@ haproxy_server_check_failures_total{exported_namespace="rh-test",exported_servic
 for i in $(oc get nodes | awk '/swrk/ {print $1}') ; do oc debug node/$i --image=rhel7/rhel-tools ; done
 
 # Copy netstat from debug mode to fabri bastion
-netstat -s > $(cat /etc/hostname)-netstat.out ; scp $(cat /etc/hostname)-netstat.out username@hostname:/home/username/ocp-prep/netstat
+netstat -s > $(cat /etc/hostname)-netstat.out ; scp $(cat /etc/hostname)-netstat.out username@hostname:/home/username/netstat
 
 # tcpdump
 
